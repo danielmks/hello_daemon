@@ -1,0 +1,13 @@
+[Unit]
+Description=Daemon Service that prints hello every hour
+After=network.target
+
+[Service]
+Type=simple
+ExecStart=/usr/local/bin/hello_daemon
+Restart=always
+User=nobody
+Group=nogroup
+
+[Install]
+WantedBy=multi-user.target
