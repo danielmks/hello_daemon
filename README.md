@@ -16,3 +16,9 @@ sudo systemctl daemon-reload
 sudo systemctl enable hello_daemon
 sudo systemctl start hello_daemon
 ```
+- log 파일 디렉터리 권한 지정
+```bash
+sudo mkdir -p /var/log/daemon_service
+sudo chown nobody:nobody /var/log/daemon_service
+sudo chmod 755 /var/log/daemon_service
+```
