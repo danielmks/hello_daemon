@@ -2,7 +2,8 @@
  * 파일명: hello_daemon.c
  * 설명: 데몬화하여 매 n분마다 "hello"와 현재 시간을 로그 파일에 기록하는 간단한 서비스 프로그램.
  *       로그 파일명은 "daemon_service_log_YYYYMMDD.log" 형식으로 생성되며,
- *       지정한 보관 기간(예제에서는 7일) 이후에는 자동으로 삭제됩니다.
+ *       지정한 보관 기간(예: 7일) 이후에는 자동으로 삭제됩니다.
+ *       로그 파일은 /var/log/daemon_service 디렉토리에 저장됩니다.
  */
 
 #include <stdio.h>
@@ -14,10 +15,12 @@
 #include <string.h>
 #include <time.h>
 #include <dirent.h>
+#include <errno.h>
 
 #define PROCESS_NAME "daemon_service"    // 프로세스명
 #define LOG_RETENTION_DAYS 7               // 로그 보관 기간 (예: 7일)
 #define INTERVAL_MINUTES 5                 // n분 단위 (원하는 값으로 수정 가능)
+#define LOG_DIR "/var/log/daemon_service"  // 로그를 저장할 디렉토리
 
 // 데몬화 함수: 프로세스를 백그라운드 데몬으로 전환
 void daemonize() {
@@ -108,6 +111,16 @@ void delete_old_logs() {
 int main() {
     // 데몬화: 백그라운드에서 실행되도록 전환
     daemonize();
+
+    // 로그 디렉토리로 이동 (없으면 생성)
+    if (chdir(LOG_DIR) < 0) {
+        if (mkdir(LOG_DIR, 0755) < 0) {
+            exit(EXIT_FAILURE);
+        }
+        if (chdir(LOG_DIR) < 0) {
+            exit(EXIT_FAILURE);
+        }
+    }
 
     // 무한 루프: 매 INTERVAL_MINUTES 분마다 로그 기록 및 오래된 로그 삭제
     while(1) {
