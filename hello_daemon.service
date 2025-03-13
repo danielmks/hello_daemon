@@ -7,7 +7,7 @@ Type=simple
 ExecStart=/usr/local/bin/hello_daemon
 Restart=always
 User=nobody
-Group=nogroup
+Group=nobody
 
 [Install]
 WantedBy=multi-user.target
